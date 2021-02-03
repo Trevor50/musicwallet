@@ -13,9 +13,20 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import include,url
 from django.contrib import admin
-from django.urls import path
+from musicwalletapp import api_views
+from rest_framework import routers
+from rest_framework.authtoken import views
+
+router = routers.DefaultRouter()
+router.register(r'users', api_views.UserViewSet)
+router.register(r'musics', api_views.MusicViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    url(r'^api/', include(router.urls,namespace='api')),
+    url(r'^api-token-auth/', views.obtain_auth_token),
+    url(r'^api-auth/', include('rest_framework.urls',namespace='rest_framework')),
+    url(r'^musicwallet/', include('musicwalletapp.urls')),
+ 	url(r'^', include('musicwalletapp.urls')),	
 ]
